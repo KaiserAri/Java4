@@ -36,4 +36,21 @@ public class UserService {
             }
         }
     }
+
+    public List<User> getUsersByUsername(String username) {
+        EntityManager em = EntityConnectivity.getEntityManager();
+        try {
+            String jpql = "SELECT u FROM User u WHERE u.username LIKE :username";
+            return em.createQuery(jpql, User.class)
+                    .setParameter("username", "%" + username + "%") // Chống SQL Injection, tìm kiếm LIKE
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
 }
